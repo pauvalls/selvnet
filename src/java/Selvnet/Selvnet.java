@@ -66,24 +66,30 @@ public class Selvnet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        //se crea una lista de objeto alumno
         ArrayList<Alumne> lista = new ArrayList<Alumne>();
-
+        //se crea un objeto SQLConnection
         SQLConnection con = new SQLConnection();
+        //se crea un objeto conection, que se usara la conexion sql del usuario
         Connection conn = con.conectar();
+        // se genera un resulset con la consulta sql dentro de la conexion.
         ResultSet rs = con.executequery("Select * from alumne", conn);
 
         try {
-            while (rs.next()) {
+            while (rs.next()) {// mientras se pueda mostrar mas
+                // alumne creado para recoger los valores del rs
                 Alumne al = new Alumne(rs.getString("nom"), rs.getInt("codi"));
+                // el objeto alumno se guarda en la lista crado con anterioridad
                 lista.add(al);
 
             }
-        } catch (SQLException ex) {
+        } catch (SQLException ex) {// prueba de errores
             Logger.getLogger(Selvnet.class.getName()).log(Level.SEVERE, null, ex);
         }
+        // se pasa al jsp como un atributo.
         request.setAttribute("Arraylist", (ArrayList) lista);
+        //se indica el dispacher utilizado 
         RequestDispatcher a = request.getRequestDispatcher("/index.jsp");
-
         a.forward(request, response);
     }
 
@@ -98,74 +104,39 @@ public class Selvnet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        //recogera los datos del jsp pasados dentro del formulario
         String codi = (String) request.getParameter("selector");
-        String query = "select * from alumne where codi=" + codi;
-        String auxilia = query;
-        System.out.println(auxilia);
-        response.setContentType("text/html;charset=UTF-8");
-
+        //se crea un objeto SQLConnection
         SQLConnection con = new SQLConnection();
+        //se crea un objeto connection con los datos del SQLConnection
         Connection conn = con.conectar();
-        ResultSet rsnombre = con.executequery(query, conn);
-
+        //se genera una consulta  y se guarda en el resultset
         ResultSet rs = con.executequery("select alumne.nom as nombre,alumne.codi as codigo,tutoria.nom as nomtutoria, assignatura.nom as nomassignatura"
                 + " from alumne inner join tutoriaalumne on tutoriaalumne.codiAlumne= alumne.codi INNER join tutoria on tutoria.codi=tutoriaalumne.codiTutoria"
-                + " INNER join assignatura on assignatura.codi=tutoria.codiAssignatura where alumne.codi=" + codi, conn);
+                + " INNER join assignatura on assignatura.codi=tutoria.codiAssignatura where alumne.codi=" + codi+" group by assignatura.codi", conn);
 
-        try {
-            
-                Alumne al = new Alumne();
-
-                while (rs.next()) {
-                    al.setNom(rs.getString("nombre"));
-                    al.setCodi(rs.getInt("codigo"));
-                    al.setAssignatures(rs.getString("nomassignatura"));
-                    al.setTutories(rs.getString("nomtutoria"));
-
-                }
-//        try {
-//
-//           
+    //   try {
+            //se crea un objeto alumno
+       //     Alumne al = new Alumne();
+            //se guardaran los valores de la consulta 
 //            while (rs.next()) {
 //                
+//                al.setNom(rs.getString("nombre"));
+//                al.setCodi(rs.getInt("codigo"));
 //                al.setAssignatures(rs.getString("nomassignatura"));
 //                al.setTutories(rs.getString("nomtutoria"));
-//                rs.next();
+//
 //            }
-//        } catch (SQLException ex) {
+            //se envian al jsp de respuesta
+            request.setAttribute("alumno", (ResultSet) rs);
+            RequestDispatcher a = request.getRequestDispatcher("/Response.jsp");
+            a.forward(request, response);
+
+//        } catch (SQLException ex) {//control de errores
 //            Logger.getLogger(Selvnet.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+  }
 
-                request.setAttribute("alumno", (Alumne) al);
-                RequestDispatcher a = request.getRequestDispatcher("/Response.jsp");
-                a.forward(request, response);
-
-                //     PrintWriter out = response.getWriter();
-//                try {
-//                    /* TODO output your page here. You may use following sample code. */
-//                    out.println("<!DOCTYPE html>");
-//                    out.println("<html>");
-//                    out.println("<head>");
-//                    out.println("<title>Servlet Selvnet</title>");
-//                    out.println("</head>");
-//                    out.println("<body>");
-//
-//                    out.println("<h1>el usuario: " + al.getNom() + " tiene</h1><br>");
-//                    out.println("<h1>Asignaturas: " + al.getAssignatures() + " y también</h1><br>");
-//                    out.println("<h1>Tutorias : " + al.getTutories() + "</h1><br>");
-//
-//                    out.println("</body>");
-//                    out.println("</html>");
-//                } finally {
-//                    out.close();
-//                }
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(Selvnet.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        // processRequest(request, response);
-
-    }
+  //  }
 
     /**
      * Returns a short description of the servlet.

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="file:/D:/Netbeans%20Proyects/%20Ús%20de%20connectors%20JDBC%20a%20un%20Servlet%20Pau%20Valls%20moreno/WebApplication2/../../schema.xsd" uri="src/conf/xml-resources/jaxb/JAXalumnes/schema.xsd"/>
+</catalog>
