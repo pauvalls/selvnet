@@ -5,6 +5,8 @@
  */
 package Selvnet;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author pauva
@@ -12,7 +14,9 @@ package Selvnet;
 public class Alumne {
     String nom;
     int codi;
-private String assignatures="", tutories="";
+ String assignatures="", tutories="";
+    ArrayList<String> listaAsignaturas; 
+    ArrayList<String> listatutorias;
 
     public String getAssignatures() {
         return assignatures;
@@ -35,6 +39,8 @@ private String assignatures="", tutories="";
     public Alumne(String nom, int codi) {
         this.nom = nom;
         this.codi = codi;
+        listaAsignaturas=new  ArrayList<String>();
+        listatutorias = new ArrayList<String>();
     }
 
     public String getNom() {
